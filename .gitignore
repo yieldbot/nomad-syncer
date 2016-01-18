@@ -1,0 +1,17 @@
+.DS_Store
+.idea
+.settings
+.env
+.coverrun
+.coverdata
+cover.out
+xunit.xml
+*.log
+*.heapsnapshot
+*.pprof
+tmp/
+logs/
+reports/
+
+/nomad-syncer
+/nomad-syncer.exe

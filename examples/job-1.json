@@ -1,0 +1,70 @@
+{
+  "Job": {
+    "ID": "job-1",
+    "Name": "job-1",
+    "Type": "service",
+    "Priority": 50,
+    "Region": "global",
+    "Datacenters": ["dc1"],
+    "Update": {
+      "Stagger": 10000000000,
+      "MaxParallel": 1
+    },
+    "Constraints": [
+      {
+        "LTarget": "$attr.kernel.name",
+        "RTarget": "linux",
+        "Operand": "="
+      }
+    ],
+    "TaskGroups": [
+      {
+        "Name": "cache",
+        "Count": 1,
+        "RestartPolicy": {
+          "Attempts": 10,
+          "Interval": 300000000000,
+          "Delay": 25000000000
+        },
+        "Tasks": [
+          {
+            "Name": "redis",
+            "Driver": "docker",
+            "Config": {
+              "image": "redis:latest",
+              "port_map": [
+                {"db": 6379}
+              ]
+            },
+            "Services": [
+              {
+                "Name": "${TASKGROUP}-redis-job-1",
+                "Tags": ["global", "cache"],
+                "PortLabel": "db",
+                "Checks": [
+                  {
+                    "Name": "alive",
+                    "Type": "tcp",
+                    "Interval": 10000000000,
+                    "Timeout": 2000000000
+                  }
+                ]
+              }
+            ],
+            "Resources": {
+              "CPU": 500,
+              "MemoryMB": 256,
+              "Networks": [
+                {
+                  "DynamicPorts": [
+                    {"Label": "db", "Value": 0}
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
