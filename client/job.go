@@ -141,3 +141,8 @@ type PeriodicConfig struct {
 	SpecType        string
 	ProhibitOverlap bool
 }
+
+// SyncJob represents sync job structure
+type SyncJob struct {
+	Job *Job
+}
