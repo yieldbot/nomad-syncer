@@ -8,10 +8,14 @@
 package app
 
 import (
+	"encoding/json"
+	"errors"
 	"flag"
 	"io/ioutil"
 	"net/url"
 	"os"
+	"os/exec"
+	"path"
 	"path/filepath"
 
 	"github.com/yieldbot/gocli"
@@ -29,6 +33,7 @@ var (
 	prettyPrintFlag bool
 	nomadFlag       string
 	proxyFlag       string
+	dockerPullFlag  bool
 )
 
 func init() {
@@ -40,6 +45,7 @@ func init() {
 	flag.BoolVar(&prettyPrintFlag, "pp", false, "Pretty print for JSON output")
 	flag.StringVar(&nomadFlag, "nomad", "", "Nomad url (default \"http://localhost:4646\")")
 	flag.StringVar(&proxyFlag, "proxy", "", "Proxy url")
+	flag.BoolVar(&dockerPullFlag, "docker-pull", false, "Pull Docker images before sync")
 }
 
 // Run runs the app
@@ -172,18 +178,31 @@ func runDelCmd() {
 }
 
 // syncFile syncs the given file
-func syncFile(path string) {
+func syncFile(file string) {
 	// Read file
-	buf, err := ioutil.ReadFile(path)
+	buf, err := ioutil.ReadFile(file)
 	if err != nil {
 		cli.LogErr.Fatal(err)
 	}
 
+	syncIt := true
+
+	// Pull docker images
+	if dockerPullFlag {
+		cli.LogOut.Printf("syncing %s\n", path.Base(file))
+		if err := findAndPullDockerImages(string(buf)); err != nil {
+			cli.LogErr.Println("failed to sync " + path.Base(file) + " due to " + err.Error())
+			syncIt = false
+		}
+	}
+
 	// Add the job
-	if err := nomadClient.AddJob(string(buf)); err != nil {
-		cli.LogErr.Fatal(err)
-	} else {
-		cli.LogOut.Printf("%s is synced\n", path)
+	if syncIt {
+		if err := nomadClient.AddJob(string(buf)); err != nil {
+			cli.LogErr.Fatal(err)
+		} else {
+			cli.LogOut.Printf("%s is synced\n", path.Base(file))
+		}
 	}
 }
 
@@ -222,4 +241,70 @@ func runSyncCmd() {
 			cli.LogErr.Fatal(err)
 		}
 	}
+}
+
+// findDockerImages finds docker images from the given content
+func findDockerImages(jobJSON string) ([]string, error) {
+
+	// Check job
+	buf := []byte(jobJSON)
+	var sj client.SyncJob
+	if err := json.Unmarshal(buf, &sj); err != nil {
+		return nil, errors.New("failed to unmarshal JSON data due to " + err.Error())
+	}
+
+	// Get images
+	var images []string
+	if sj.Job != nil && sj.Job.TaskGroups != nil {
+		for _, tg := range sj.Job.TaskGroups {
+			if tg.Tasks != nil {
+				for _, t := range tg.Tasks {
+					if t.Config != nil && t.Driver == "docker" {
+						for ck, cv := range t.Config {
+							if ck == "image" {
+								images = append(images, cv.(string))
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return images, nil
+}
+
+// pullDockerImage pulls a docker image by the given name
+func pullDockerImage(image string) error {
+	cmd := exec.Command("docker", "pull", image)
+	err := cmd.Start()
+	if err != nil {
+		return err
+	}
+	cli.LogOut.Println("pulling " + image)
+	err = cmd.Wait()
+	if err != nil {
+		return errors.New("fail to pull " + image)
+	}
+	return nil
+}
+
+// findAndPullDockerImages finds and pulls docker images from the given content
+func findAndPullDockerImages(jobJSON string) error {
+
+	// Find images
+	var images []string
+	images, err := findDockerImages(jobJSON)
+	if err != nil {
+		return errors.New("failed to find docker images due to " + err.Error())
+	}
+
+	// Pull images
+	for _, i := range images {
+		if err := pullDockerImage(i); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
