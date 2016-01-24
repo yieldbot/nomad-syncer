@@ -128,12 +128,10 @@ func runAddCmd() {
 	}
 
 	// Add the job
-	if ok, err := nomadClient.AddJob(jobj); !ok && err != nil {
-		cli.LogErr.Fatal(err) // fatal error
-	} else if err != nil {
-		cli.LogErr.Println(err) // print error
+	if err := nomadClient.AddJob(jobj); err != nil {
+		cli.LogErr.Fatal(err)
 	} else {
-		cli.LogOut.Printf("The job is added\n")
+		cli.LogOut.Printf("job is added\n")
 	}
 }
 
@@ -166,10 +164,8 @@ func runDelCmd() {
 	}
 
 	// Delete the job
-	if ok, err := nomadClient.DeleteJob(job); !ok && err != nil {
-		cli.LogErr.Fatal(err) // fatal error
-	} else if err != nil {
-		cli.LogErr.Println(err) // print error
+	if err := nomadClient.DeleteJob(job); err != nil {
+		cli.LogErr.Fatal(err)
 	} else {
 		cli.LogOut.Printf("%s job is removed\n", job)
 	}
@@ -184,10 +180,8 @@ func syncFile(path string) {
 	}
 
 	// Add the job
-	if ok, err := nomadClient.AddJob(string(buf)); !ok && err != nil {
-		cli.LogErr.Fatal(err) // fatal error
-	} else if err != nil {
-		cli.LogErr.Println(err) // print error
+	if err := nomadClient.AddJob(string(buf)); err != nil {
+		cli.LogErr.Fatal(err)
 	} else {
 		cli.LogOut.Printf("%s is synced\n", path)
 	}

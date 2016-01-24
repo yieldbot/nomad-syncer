@@ -74,13 +74,13 @@ func (cl Client) PrintJobs(pretty bool) error {
 }
 
 // AddJob adds a job
-func (cl Client) AddJob(jsonContent string) (bool, error) {
+func (cl Client) AddJob(jsonContent string) error {
 
 	// Check job
 	buf := []byte(jsonContent)
-	var job Job
+	var job SyncJob
 	if err := json.Unmarshal(buf, &job); err != nil {
-		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
+		return errors.New("failed to unmarshal JSON data due to " + err.Error())
 	}
 
 	// Add job
@@ -88,10 +88,10 @@ func (cl Client) AddJob(jsonContent string) (bool, error) {
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
-		return false, errors.New("failed to add job due to " + err.Error())
+		return errors.New("failed to add job due to " + err.Error())
 	}
 
-	return true, nil
+	return nil
 }
 
 // GetJob returns the job information
@@ -149,23 +149,23 @@ func (cl Client) PrintJob(jobID string, pretty bool) error {
 }
 
 // DeleteJob deletes a job
-func (cl Client) DeleteJob(jobID string) (bool, error) {
+func (cl Client) DeleteJob(jobID string) error {
 
 	// Check job
 	if jobID == "" {
-		return false, errors.New("invalid job Id")
+		return errors.New("invalid job Id")
 	}
 
 	// Delete job
 	req, err := http.NewRequest("DELETE", cl.nomadURL()+"/v1/job/"+jobID, nil)
 	res, err := cl.doRequest(req)
 	if err != nil {
-		return false, errors.New("failed to delete job due to " + err.Error())
+		return errors.New("failed to delete job due to " + err.Error())
 	} else if res != nil {
 
 	}
 
-	return true, nil
+	return nil
 }
 
 // doRequest makes a request to the REST API
