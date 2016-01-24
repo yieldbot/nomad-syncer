@@ -54,7 +54,7 @@ func Run() {
 	// Init cli
 	cli = gocli.Cli{
 		AppName:    "nomad-syncer",
-		AppVersion: "1.0.0",
+		AppVersion: "1.1.0",
 		AppDesc:    "An opinionated CLI for Nomad",
 		CommandList: map[string]string{
 			"jobs": "Retrieve jobs",
