@@ -34,6 +34,7 @@ Usage: nomad-syncer [OPTIONS] COMMAND [arg...]
 An opinionated CLI for Nomad
 
 Options:
+  --docker-pull : Pull Docker images before sync
   --nomad       : Nomad url (default "http://localhost:4646")
   --proxy       : Proxy url
   -h, --help    : Display usage
@@ -84,6 +85,18 @@ Syncing a directory
 ```bash
 ./nomad-syncer sync examples/
 ```
+
+Syncing with `--docker-pull`
+
+If you have private Docker repository and don't want to add credentials into 
+jobs (see https://www.nomadproject.io/docs/drivers/docker.html) then you can use `--docker-pull`.
+It allows you to pull Docker images before syncing job files.
+
+```bash
+HOME=/apps/nomad /apps/nomad/nomad-syncer --docker-pull sync examples/
+```
+
+`HOME=/apps/nomad` points to `.dockercfg` 's directory. It can be a user or `/etc` directory.
 
 #### Adding a job
 
