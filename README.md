@@ -133,13 +133,13 @@ For the full copyright and license information, please view the LICENSE.txt file
 [godoc-url]: https://godoc.org/github.com/yieldbot/nomad-syncer
 [godoc-image]: https://godoc.org/github.com/yieldbot/nomad-syncer?status.svg
 
-[release-url]: https://github.com/yieldbot/nomad-syncer/releases/tag/v1.1.0
-[release-image]: https://img.shields.io/badge/release-v1.1.0-blue.svg
+[release-url]: https://github.com/yieldbot/nomad-syncer/releases/tag/v1.1.1
+[release-image]: https://img.shields.io/badge/release-v1.1.1-blue.svg
 
 [coverage-url]: https://coveralls.io/github/yieldbot/nomad-syncer?branch=master
 [coverage-image]: https://coveralls.io/repos/yieldbot/nomad-syncer/badge.svg?branch=master&service=github)
 
-[download-linux-amd64-url]: https://github.com/yieldbot/nomad-syncer/releases/download/v1.1.0/nomad-syncer-linux-amd64.zip
-[download-darwin-amd64-url]: https://github.com/yieldbot/nomad-syncer/releases/download/v1.1.0/nomad-syncer-darwin-amd64.zip
+[download-linux-amd64-url]: https://github.com/yieldbot/nomad-syncer/releases/download/v1.1.1/nomad-syncer-linux-amd64.zip
+[download-darwin-amd64-url]: https://github.com/yieldbot/nomad-syncer/releases/download/v1.1.1/nomad-syncer-darwin-amd64.zip
 
 [nomad-url]: https://www.nomadproject.io/
