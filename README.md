@@ -15,6 +15,7 @@ An opinionated CLI for [Nomad][nomad-url]
 See all [releases](https://github.com/yieldbot/nomad-syncer/releases)
 
 #### Building from source
+
 ```
 go get github.com/yieldbot/nomad-syncer
 cd $GOPATH/src/github.com/yieldbot/nomad-syncer
@@ -78,12 +79,12 @@ export NOMAD_SYNCER_PROXY_URL=http://localhost:8888
 
 Syncing a file
 ```bash
-./nomad-syncer sync examples/job-1.json
+./nomad-syncer sync examples/jobs/job-1.json
 ```
 
 Syncing a directory
 ```bash
-./nomad-syncer sync examples/
+./nomad-syncer sync examples/jobs/
 ```
 
 Syncing with `--docker-pull`
@@ -93,7 +94,7 @@ jobs (see https://www.nomadproject.io/docs/drivers/docker.html) then you can use
 It allows you to pull Docker images before syncing job files.
 
 ```bash
-HOME=/apps/nomad /apps/nomad/nomad-syncer --docker-pull sync examples/
+HOME=/apps/nomad /apps/nomad/nomad-syncer --docker-pull sync examples/jobs/
 ```
 
 `HOME=/apps/nomad` points to `.dockercfg` 's directory. It can be a user or `/etc` directory.
@@ -101,7 +102,7 @@ HOME=/apps/nomad /apps/nomad/nomad-syncer --docker-pull sync examples/
 #### Adding a job
 
 ```bash
-./nomad-syncer add "$(cat examples/job-1.json)"
+./nomad-syncer add "$(cat examples/jobs/job-1.json)"
 ```
 
 #### Getting a job

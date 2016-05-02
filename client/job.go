@@ -1,6 +1,6 @@
 /*
  * nomad-syncer
- * Copyright (c) 2016 Yieldbot, Inc. (http://github.com/yieldbot/nomad-syncer)
+ * Copyright (c) 2016 Yieldbot, Inc.
  * For the full copyright and license information, please view the LICENSE.txt file.
  */
 
